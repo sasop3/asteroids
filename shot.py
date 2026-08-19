@@ -1,0 +1,16 @@
+from typing import override
+import pygame
+from circleshape import CircleShape
+from constants import SHOT_RAIDUS,LINE_WIDTH
+
+class Shot(CircleShape):
+    def __init__(self, x: float, y: float) -> None:
+        super().__init__(x, y, SHOT_RAIDUS)
+
+    @override
+    def draw(self, screen: pygame.Surface) -> None:
+        pygame.draw.circle(screen,color="white",center=self.position,radius=self.radius,width=LINE_WIDTH)
+
+    @override
+    def update(self, dt: float) -> None:
+        self.position += self.velocity * dt

@@ -2,12 +2,13 @@ from typing import override
 import pygame
 from circleshape import CircleShape
 from shot import Shot
-from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SPEED,PLAYER_TURN_SPEED,PLAYER_SHOOT_SPEED
+from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_SPEED,PLAYER_TURN_SPEED,PLAYER_SHOOT_SPEED
 
 class Player(CircleShape):
     def __init__(self, x: float, y: float) -> None:
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.cooldown = 0
 
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -32,13 +33,19 @@ class Player(CircleShape):
         self.position += rotated_with_speed_vector
         
     def shoot(self):
-        bullet = Shot(self.position.x,self.position.y)
-        bullet_vector = pygame.Vector2(0,1)
-        bullet_direction = bullet_vector.rotate(self.rotation)
-        bullet_direction_scaled = bullet_direction * PLAYER_SHOOT_SPEED
-        bullet.velocity = bullet_direction_scaled
+        if(self.cooldown > 0):
+            pass
+        else:
+            self.cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
+            bullet = Shot(self.position.x,self.position.y)
+            bullet_vector = pygame.Vector2(0,1)
+            bullet_direction = bullet_vector.rotate(self.rotation)
+            bullet_direction_scaled = bullet_direction * PLAYER_SHOOT_SPEED
+            bullet.velocity = bullet_direction_scaled
+            
 
     def update(self, dt: float) -> None:
+        self.cooldown -= dt
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
             self.move(dt)

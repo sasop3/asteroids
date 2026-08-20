@@ -42,6 +42,7 @@ class Player(CircleShape):
             bullet_direction = bullet_vector.rotate(self.rotation)
             bullet_direction_scaled = bullet_direction * PLAYER_SHOOT_SPEED
             bullet.velocity = bullet_direction_scaled
+            return bullet
             
 
     def update(self, dt: float) -> None:

@@ -1,6 +1,10 @@
+from time import sleep
+
 import pygame
 import sys
 from sqlite3.dbapi2 import TimeFromTicks
+
+from pygame.time import wait
 from constants import PLAYER_RADIUS, SCREEN_WIDTH,SCREEN_HEIGHT
 from logger import log_state
 from logger import log_event
@@ -48,10 +52,10 @@ def main():
         updatable.update(dt)
         for a in asteroids:
             if(a.collides_with(player)):
+                player.respawn()
                 log_event("player_hit")
-                print("Game over!")
-                sys.exit()
 
+                
             for s in shots:
                 if(a.collides_with(s)):
                     log_event("asteroid_shot")

@@ -2,13 +2,15 @@ from typing import override
 import pygame
 from circleshape import CircleShape
 from shot import Shot
-from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_SPEED,PLAYER_TURN_SPEED,PLAYER_SHOOT_SPEED
+from constants import LINE_WIDTH, PLAYER_LIVES, PLAYER_RADIUS, PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_SPEED,PLAYER_TURN_SPEED,PLAYER_SHOOT_SPEED,SCREEN_HEIGHT,SCREEN_WIDTH
 
 class Player(CircleShape):
     def __init__(self, x: float, y: float) -> None:
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.cooldown = 0
+        self.lives = PLAYER_LIVES
+        self.hidden = False
 
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -20,7 +22,8 @@ class Player(CircleShape):
 
     @override
     def draw(self, screen: pygame.Surface) -> None:
-        pygame.draw.polygon(screen,"white",self.triangle(),LINE_WIDTH)
+        if(not self.hidden):
+            pygame.draw.polygon(screen,"white",self.triangle(),LINE_WIDTH)
 
     def rotate(self,dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -43,7 +46,20 @@ class Player(CircleShape):
             bullet_direction_scaled = bullet_direction * PLAYER_SHOOT_SPEED
             bullet.velocity = bullet_direction_scaled
             return bullet
-            
+
+    def respawn(self):
+        self.position.x = SCREEN_WIDTH/2
+        self.position.y = SCREEN_HEIGHT/2
+
+        if(self.lives > 0):
+            self.lives -= 1
+        else:
+            self.kill()
+
+        
+        print(self.lives) #debug
+
+    
 
     def update(self, dt: float) -> None:
         self.cooldown -= dt

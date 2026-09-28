@@ -46,7 +46,6 @@ def main():
 
         screen.fill("black")
 
-
         for d in drawable:
             d.draw(screen)
         updatable.update(dt)
